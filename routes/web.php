@@ -14,6 +14,12 @@ Route::get('/', [LandingController::class, 'index'])->name('home');
 Route::post('/track', [LandingController::class, 'track'])->name('track');
 
 Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
+Route::get('/orders/{order}/status', function (\App\Models\Order $order) {
+    return response()->json([
+        'status' => $order->status,
+        'updated_at' => $order->updated_at?->timestamp,
+    ]);
+});
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -36,12 +42,13 @@ Route::middleware('auth')->group(function () {
     // Checkout
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
-    Route::get('/checkout/success/{id}', [CheckoutController::class, 'success'])->name('checkout.success');
+    Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('/dashboard/orders', [DashboardController::class, 'orders'])->name('dashboard.orders');
-    Route::get('/dashboard/orders/{id}', [DashboardController::class, 'orderDetail'])->name('dashboard.order-detail');
+    Route::get('/dashboard/orders/{order}', [DashboardController::class, 'orderDetail'])->name('dashboard.order-detail');
+    Route::post('/dashboard/orders/{order}/status', [DashboardController::class, 'updateStatus'])->name('dashboard.orders.update-status');
     Route::get('/dashboard/profile', [DashboardController::class, 'profile'])->name('dashboard.profile');
     Route::post('/dashboard/profile', [DashboardController::class, 'updateProfile'])->name('dashboard.update-profile');
 });

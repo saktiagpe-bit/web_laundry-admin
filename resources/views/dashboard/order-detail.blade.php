@@ -69,6 +69,45 @@
                 
                 <!-- Pembayaran -->
                 <div>
+                    @if(Auth::user()->role === 'admin')
+                    <div class="bg-pink-50 p-6 rounded-3xl border border-pink-100 mb-8 shadow-sm">
+                        <h3 class="font-bold text-lg mb-4 text-pink-dark flex items-center gap-2">
+                            <i data-feather="settings" class="w-5 h-5"></i> Aksi Admin: Update Status
+                        </h3>
+                        <form action="{{ route('dashboard.orders.update-status', $order->id) }}" method="POST" class="space-y-4">
+                            @csrf
+                            <div>
+                                <label class="block text-xs font-bold text-pink-700 uppercase tracking-wider mb-1">Status Pesanan</label>
+                                <select name="status" class="w-full rounded-xl border border-pink-200 p-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-pink-400">
+                                    <option value="Antre" {{ $order->status == 'Antre' ? 'selected' : '' }}>Antre</option>
+                                    <option value="Dicuci" {{ $order->status == 'Dicuci' ? 'selected' : '' }}>Dicuci</option>
+                                    <option value="Disetrika" {{ $order->status == 'Disetrika' ? 'selected' : '' }}>Disetrika</option>
+                                    <option value="Siap Diambil/Diantar" {{ $order->status == 'Siap Diambil/Diantar' ? 'selected' : '' }}>Siap Diambil/Diantar</option>
+                                    <option value="Selesai" {{ $order->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                                    <option value="Batal" {{ $order->status == 'Batal' ? 'selected' : '' }}>Batal</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-xs font-bold text-pink-700 uppercase tracking-wider mb-1">Status Pembayaran</label>
+                                <select name="payment_status" class="w-full rounded-xl border border-pink-200 p-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-pink-400">
+                                    <option value="unpaid" {{ $order->payment->payment_status == 'unpaid' ? 'selected' : '' }}>Belum Bayar (Unpaid)</option>
+                                    <option value="paid" {{ $order->payment->payment_status == 'paid' ? 'selected' : '' }}>Sudah Bayar (Paid)</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-xs font-bold text-pink-700 uppercase tracking-wider mb-1">Keterangan / Catatan Status</label>
+                                <input type="text" name="description" placeholder="Contoh: Pakaian sedang proses dicuci" class="w-full rounded-xl border border-pink-200 p-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-pink-400">
+                            </div>
+                            
+                            <button type="submit" class="w-full btn-pink py-2.5 rounded-xl font-bold text-sm shadow-md">
+                                Update Status
+                            </button>
+                        </form>
+                    </div>
+                    @endif
+
                     <h3 class="font-bold text-lg mb-4 text-gray-800 border-b pb-2">Informasi Pembayaran</h3>
                     <div class="space-y-3 text-sm mb-6">
                         <p><span class="text-gray-500 block">Metode:</span> <span class="font-medium text-gray-800 uppercase">{{ $order->payment->payment_method }}</span></p>
@@ -106,4 +145,24 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const orderId = "{{ $order->id }}";
+        const currentStatus = "{{ $order->status }}";
+        
+        setInterval(function() {
+            fetch(`/orders/${orderId}/status`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status && data.status !== currentStatus) {
+                        window.location.reload();
+                    }
+                })
+                .catch(err => console.error('Error checking order status:', err));
+        }, 4000);
+    });
+</script>
+@endpush
 @endsection

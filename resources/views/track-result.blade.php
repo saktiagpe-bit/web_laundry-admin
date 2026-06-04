@@ -68,4 +68,24 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const orderId = "{{ $order->id }}";
+        const currentStatus = "{{ $order->status }}";
+        
+        setInterval(function() {
+            fetch(`/orders/${orderId}/status`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status && data.status !== currentStatus) {
+                        window.location.reload();
+                    }
+                })
+                .catch(err => console.error('Error checking order status:', err));
+        }, 4000);
+    });
+</script>
+@endpush
 @endsection

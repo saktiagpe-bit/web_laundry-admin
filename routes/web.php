@@ -51,4 +51,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/dashboard/orders/{order}/status', [DashboardController::class, 'updateStatus'])->name('dashboard.orders.update-status');
     Route::get('/dashboard/profile', [DashboardController::class, 'profile'])->name('dashboard.profile');
     Route::post('/dashboard/profile', [DashboardController::class, 'updateProfile'])->name('dashboard.update-profile');
+
+    // Admin Routes
+    Route::get('/admin/reports', [\App\Http\Controllers\AdminController::class, 'reports'])->name('admin.reports');
+    Route::get('/admin/orders', [\App\Http\Controllers\AdminController::class, 'orders'])->name('admin.orders');
+    Route::post('/admin/orders/{order}/status', [\App\Http\Controllers\AdminController::class, 'updateStatus'])->name('admin.orders.update-status');
 });

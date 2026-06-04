@@ -6,28 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $fillable = [
-        'user_id',
-        'transaction_number',
-        'customer_name',
-        'customer_email',
-        'customer_phone',
-        'customer_gender',
-        'pickup_type',
-        'delivery_type',
-        'distance_km',
-        'address',
-        'latitude',
-        'longitude',
-        'driver_notes',
-        'status',
-        'total_price',
-    ];
+    protected $guarded = [];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+    protected $casts = [
+        'completed_at' => 'datetime',
+    ];
 
     public function items()
     {
@@ -47,5 +30,10 @@ class Order extends Model
     public function deliverySchedule()
     {
         return $this->hasOne(DeliverySchedule::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

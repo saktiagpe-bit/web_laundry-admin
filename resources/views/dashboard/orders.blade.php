@@ -17,15 +17,26 @@
                 </div>
             </div>
             <div class="p-4 flex flex-col gap-2">
+                <a href="{{ route('dashboard.profile') }}" class="flex items-center gap-3 p-3 rounded-xl {{ request()->routeIs('dashboard.profile') ? 'bg-pink-500 text-white' : 'hover:bg-pink-50 text-gray-700' }} transition font-medium">
+                    <i data-feather="user" class="w-5 h-5"></i> Profil Saya
+                </a>
                 <a href="{{ route('dashboard.index') }}" class="flex items-center gap-3 p-3 rounded-xl {{ request()->routeIs('dashboard.index') ? 'bg-pink-500 text-white' : 'hover:bg-pink-50 text-gray-700' }} transition font-medium">
                     <i data-feather="grid" class="w-5 h-5"></i> Dashboard
                 </a>
                 <a href="{{ route('dashboard.orders') }}" class="flex items-center gap-3 p-3 rounded-xl {{ request()->routeIs('dashboard.orders') ? 'bg-pink-500 text-white' : 'hover:bg-pink-50 text-gray-700' }} transition font-medium">
                     <i data-feather="list" class="w-5 h-5"></i> Riwayat Pesanan
                 </a>
-                <a href="{{ route('dashboard.profile') }}" class="flex items-center gap-3 p-3 rounded-xl {{ request()->routeIs('dashboard.profile') ? 'bg-pink-500 text-white' : 'hover:bg-pink-50 text-gray-700' }} transition font-medium">
-                    <i data-feather="user" class="w-5 h-5"></i> Profil Saya
-                </a>
+                
+                @if(Auth::user()->role === 'admin')
+                    <div class="border-t border-gray-100 my-2"></div>
+                    <p class="text-[10px] font-semibold text-pink-500 px-3 uppercase tracking-wider mb-1">Panel Admin</p>
+                    <a href="{{ route('admin.reports') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-pink-50 text-gray-700 transition font-medium">
+                        <i data-feather="trending-up" class="w-5 h-5"></i> Laporan Keuangan
+                    </a>
+                    <a href="{{ route('admin.orders') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-pink-50 text-gray-700 transition font-medium">
+                        <i data-feather="shopping-bag" class="w-5 h-5"></i> Manajemen Pesanan
+                    </a>
+                @endif
             </div>
         </div>
     </div>

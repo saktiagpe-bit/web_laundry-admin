@@ -6,11 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class DeliverySchedule extends Model
 {
-    protected $fillable = [
-        'order_id',
-        'pickup_date',
-        'pickup_time',
-        'delivery_date',
-        'delivery_time',
-    ];
+    protected $guarded = [];
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
 }

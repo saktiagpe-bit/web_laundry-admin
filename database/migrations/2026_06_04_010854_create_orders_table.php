@@ -28,6 +28,7 @@ return new class extends Migration
             $table->text('driver_notes')->nullable();
             $table->string('status')->default('pending');
             $table->integer('total_price');
+            $table->timestamp('completed_at')->nullable();
             $table->timestamps();
         });
     }

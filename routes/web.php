@@ -26,29 +26,22 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // OTP Routes (Unverified only)
-    Route::get('/otp', [OTPController::class, 'index'])->name('otp.index');
-    Route::post('/otp/send', [OTPController::class, 'send'])->name('otp.send');
-    Route::post('/otp/verify', [OTPController::class, 'verify'])->name('otp.verify');
+    // Protected Routes (Must be logged in)
+    // Cart
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
+    Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
 
-    // Protected Routes (Must be logged in and phone verified)
-    Route::middleware('verified.phone')->group(function () {
-        // Cart
-        Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-        Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
-        Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
-        Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
+    // Checkout
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
+    Route::get('/checkout/success/{id}', [CheckoutController::class, 'success'])->name('checkout.success');
 
-        // Checkout
-        Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-        Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
-        Route::get('/checkout/success/{id}', [CheckoutController::class, 'success'])->name('checkout.success');
-
-        // Dashboard
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
-        Route::get('/dashboard/orders', [DashboardController::class, 'orders'])->name('dashboard.orders');
-        Route::get('/dashboard/orders/{id}', [DashboardController::class, 'orderDetail'])->name('dashboard.order-detail');
-        Route::get('/dashboard/profile', [DashboardController::class, 'profile'])->name('dashboard.profile');
-        Route::post('/dashboard/profile', [DashboardController::class, 'updateProfile'])->name('dashboard.update-profile');
-    });
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/dashboard/orders', [DashboardController::class, 'orders'])->name('dashboard.orders');
+    Route::get('/dashboard/orders/{id}', [DashboardController::class, 'orderDetail'])->name('dashboard.order-detail');
+    Route::get('/dashboard/profile', [DashboardController::class, 'profile'])->name('dashboard.profile');
+    Route::post('/dashboard/profile', [DashboardController::class, 'updateProfile'])->name('dashboard.update-profile');
 });

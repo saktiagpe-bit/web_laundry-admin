@@ -15,10 +15,6 @@ class EnsurePhoneIsVerified
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user() && ! $request->user()->phone_verified_at) {
-            return redirect()->route('otp.index')->with('warning', 'Silakan verifikasi nomor telepon Anda terlebih dahulu sebelum memesan layanan.');
-        }
-
         return $next($request);
     }
 }

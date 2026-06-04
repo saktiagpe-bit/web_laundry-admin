@@ -59,7 +59,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('otp.index')->with('success', 'Registrasi berhasil! Silakan verifikasi nomor telepon Anda.');
+        return redirect()->route('services.index')->with('success', 'Registrasi berhasil!');
     }
 
     public function logout(Request $request)

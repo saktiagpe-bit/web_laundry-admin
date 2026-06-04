@@ -39,7 +39,6 @@
                 <div class="flex items-center space-x-4">
                     <a href="{{ route('services.index') }}" class="text-gray-600 hover:text-pink-500 font-medium">Layanan</a>
                     @auth
-                        @if(Auth::user()->phone_verified_at)
                         <a href="{{ route('cart.index') }}" class="text-gray-600 hover:text-pink-500 relative">
                             <i data-feather="shopping-bag"></i>
                             @if(session('cart'))
@@ -47,7 +46,6 @@
                             @endif
                         </a>
                         <a href="{{ route('dashboard.index') }}" class="text-gray-600 hover:text-pink-500 font-medium">Dashboard</a>
-                        @endif
                         <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
                             <button type="submit" class="text-gray-600 hover:text-pink-500 font-medium">Logout</button>

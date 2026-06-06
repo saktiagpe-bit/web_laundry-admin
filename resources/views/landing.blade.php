@@ -9,7 +9,9 @@
             <h1 class="text-5xl font-extrabold mb-4 leading-tight">Cucian Bersih,<br>Harum & Rapi!</h1>
             <p class="text-xl mb-8 opacity-90">YURE Laundry hadir untuk menyelesaikan masalah cucian kotor Anda dengan layanan antar-jemput yang cepat dan profesional.</p>
             <div class="flex gap-4">
-                <a href="{{ route('register') }}" class="bg-white text-pink-dark px-8 py-3 rounded-full font-bold shadow-lg hover:bg-gray-100 transition duration-300">Mulai Sekarang</a>
+                @guest
+                    <a href="{{ route('register') }}" class="bg-white text-pink-dark px-8 py-3 rounded-full font-bold shadow-lg hover:bg-gray-100 transition duration-300">Mulai Sekarang</a>
+                @endguest
                 <a href="#track" class="border-2 border-white text-white px-8 py-3 rounded-full font-bold hover:bg-white hover:text-pink-dark transition duration-300">Cek Status</a>
             </div>
         </div>

@@ -129,7 +129,7 @@
                                     @csrf
                                     <label class="block text-xs font-bold text-gray-700 mb-1">Upload Bukti Transfer</label>
                                     <input type="file" name="payment_proof" accept="image/*" required class="w-full text-sm border border-gray-300 rounded-lg p-1.5 bg-white mb-2">
-                                    <button type="submit" class="w-full bg-pink-500 text-white font-bold py-1.5 px-3 text-sm rounded-lg hover:bg-pink-600 transition">Kirim Bukti</button>
+                                    <button type="submit" class="w-full btn-pink text-white font-bold py-2 px-3 text-sm rounded-lg shadow-sm transition">Kirim Bukti</button>
                                 </form>
                             </div>
                         @elseif($order->payment->payment_status == 'pending_validation')

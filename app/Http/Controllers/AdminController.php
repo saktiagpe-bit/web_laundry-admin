@@ -208,7 +208,7 @@ class AdminController extends Controller
             return redirect()->route('home')->with('error', 'Anda tidak memiliki akses ke halaman admin.');
         }
         $request->validate([
-            'status' => 'required|in:Antre,Diproses,Selesai,Batal'
+            'status' => 'required|in:Antre,Diproses,Dicuci,Disetrika,Siap Diambil/Diantar,Selesai,Batal'
         ]);
 
         $oldStatus = $order->status;

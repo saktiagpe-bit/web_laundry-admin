@@ -117,6 +117,9 @@
                                             @csrf
                                             <select name="status" onchange="this.form.submit()" class="px-2 py-1.5 border border-gray-300 rounded-xl text-xs bg-gray-50 text-gray-700 focus:outline-none focus:ring-1 focus:ring-pink-500">
                                                 <option value="Antre" {{ $order->status === 'Antre' ? 'selected' : '' }}>Antre</option>
+                                                <option value="Dicuci" {{ $order->status === 'Dicuci' ? 'selected' : '' }}>Dicuci</option>
+                                                <option value="Disetrika" {{ $order->status === 'Disetrika' ? 'selected' : '' }}>Disetrika</option>
+                                                <option value="Siap Diambil/Diantar" {{ $order->status === 'Siap Diambil/Diantar' ? 'selected' : '' }}>Siap Diambil/Diantar</option>
                                                 <option value="Diproses" {{ $order->status === 'Diproses' ? 'selected' : '' }}>Diproses</option>
                                                 <option value="Selesai" {{ $order->status === 'Selesai' ? 'selected' : '' }}>Selesai</option>
                                                 <option value="Batal" {{ $order->status === 'Batal' ? 'selected' : '' }}>Batal</option>

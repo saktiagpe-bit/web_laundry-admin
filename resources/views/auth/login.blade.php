@@ -8,7 +8,7 @@
                 <i data-feather="log-in" class="w-8 h-8"></i>
             </div>
             <h2 class="text-3xl font-extrabold text-gray-900">Selamat Datang!</h2>
-            <p class="mt-2 text-sm text-gray-600">Masuk ke akun BubbleWash Anda.</p>
+            <p class="mt-2 text-sm text-gray-600">Masuk ke akun YURE Laundry Anda.</p>
         </div>
         <form class="space-y-6" action="{{ route('login') }}" method="POST">
             @csrf

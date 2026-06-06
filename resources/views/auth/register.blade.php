@@ -8,7 +8,7 @@
                 <i data-feather="user-plus" class="w-8 h-8"></i>
             </div>
             <h2 class="text-3xl font-extrabold text-gray-900">Buat Akun Baru</h2>
-            <p class="mt-2 text-sm text-gray-600">Bergabunglah dengan BubbleWash hari ini.</p>
+            <p class="mt-2 text-sm text-gray-600">Bergabunglah dengan YURE Laundry hari ini.</p>
         </div>
         <form class="space-y-4" action="{{ route('register') }}" method="POST">
             @csrf

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BubbleWash - Laundry Pink Cute</title>
+    <title>YURE Laundry - Cute & Professional Services</title>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -33,7 +33,7 @@
                 <div class="flex items-center">
                     <a href="{{ route('home') }}" class="flex items-center gap-2">
                         <i data-feather="cloud-snow" class="text-pink-500 w-8 h-8"></i>
-                        <span class="font-bold text-2xl text-pink-dark">BubbleWash</span>
+                        <span class="font-bold text-2xl text-pink-dark">YURE Laundry</span>
                     </a>
                 </div>
                 <div class="flex items-center space-x-4">
@@ -98,9 +98,45 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-pink-200 mt-12 py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-500">
-            <p>&copy; {{ date('Y') }} BubbleWash Laundry. Cute & Professional Services.</p>
+    <footer class="bg-white border-t border-pink-200 mt-12 py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 text-left">
+                <!-- Brand section -->
+                <div class="flex flex-col gap-3">
+                    <div class="flex items-center gap-2">
+                        <i data-feather="cloud-snow" class="text-pink-500 w-6 h-6"></i>
+                        <span class="font-bold text-xl text-pink-dark">YURE Laundry</span>
+                    </div>
+                    <p class="text-gray-500 text-sm">
+                        Layanan cuci dan setrika premium, cepat, bersih, dan wangi untuk kenyamanan pakaian Anda.
+                    </p>
+                </div>
+                <!-- Contact info -->
+                <div>
+                    <h4 class="font-semibold text-pink-dark mb-3">Hubungi Kami</h4>
+                    <ul class="space-y-2 text-sm text-gray-500">
+                        <li class="flex items-center gap-2">
+                            <i data-feather="phone" class="w-4 h-4 text-pink-500"></i>
+                            <span>0895-0764-0638</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i data-feather="message-circle" class="w-4 h-4 text-pink-500"></i>
+                            <a href="https://wa.me/6289507640638" target="_blank" class="hover:text-pink-500">WhatsApp Kami</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Address info -->
+                <div>
+                    <h4 class="font-semibold text-pink-dark mb-3">Alamat Outlet</h4>
+                    <p class="text-sm text-gray-500 flex items-start gap-2">
+                        <i data-feather="map-pin" class="w-4 h-4 text-pink-500 mt-0.5 flex-shrink-0"></i>
+                        <span>Jalan Pandanwangi Raya No.99, Cibiru Wetan, Kec. Cileunyi, Kabupaten Bandung, Jawa Barat 40625</span>
+                    </p>
+                </div>
+            </div>
+            <div class="border-t border-pink-100 pt-8 text-center text-gray-500 text-sm">
+                <p>&copy; {{ date('Y') }} YURE Laundry. Cute & Professional Services.</p>
+            </div>
         </div>
     </footer>
 

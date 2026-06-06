@@ -138,7 +138,7 @@
 
                 <div class="bg-blue-50 p-4 rounded-xl text-sm text-blue-800 flex items-start gap-3">
                     <i data-feather="shield" class="mt-1 flex-shrink-0"></i>
-                    <p>Pesanan Anda aman bersama BubbleWash. Kami menjamin kebersihan dan ketepatan waktu.</p>
+                    <p>Pesanan Anda aman bersama YURE Laundry. Kami menjamin kebersihan dan ketepatan waktu.</p>
                 </div>
             </div>
         </div>
@@ -148,9 +148,9 @@
 
 @push('scripts')
 <script>
-    // Outlet coordinate (e.g., center of Yogyakarta)
-    const OUTLET_LAT = -7.7956;
-    const OUTLET_LNG = 110.3695;
+    // Outlet coordinate (Jalan Pandanwangi Raya No.99, Cibiru Wetan, Kec. Cileunyi, Kabupaten Bandung, Jawa Barat 40625)
+    const OUTLET_LAT = -6.942611;
+    const OUTLET_LNG = 107.725861;
     
     // Haversine formula
     function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -166,7 +166,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        var map = L.map('map').setView([OUTLET_LAT, OUTLET_LNG], 13);
+        var map = L.map('map').setView([OUTLET_LAT, OUTLET_LNG], 15);
         
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
@@ -174,7 +174,7 @@
         
         // Outlet Marker
         L.marker([OUTLET_LAT, OUTLET_LNG]).addTo(map)
-            .bindPopup('<b>BubbleWash Outlet</b>').openPopup();
+            .bindPopup('<b>YURE Laundry Outlet</b>').openPopup();
 
         // 3KM Circle
         L.circle([OUTLET_LAT, OUTLET_LNG], {
@@ -215,6 +215,24 @@
                 submitBtn.disabled = false;
                 submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
             }
+
+            // Auto-fill address from clicked location
+            var addressTextarea = document.querySelector('textarea[name="address"]');
+            addressTextarea.value = "Mencari alamat...";
+
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=id`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.display_name) {
+                        addressTextarea.value = data.display_name;
+                    } else {
+                        addressTextarea.value = "";
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching address:', error);
+                    addressTextarea.value = "";
+                });
         });
     });
 </script>

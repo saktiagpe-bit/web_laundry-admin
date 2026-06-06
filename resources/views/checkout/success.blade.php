@@ -6,7 +6,7 @@
         <div class="bg-green-500 py-10 text-white">
             <i data-feather="check-circle" class="w-20 h-20 mx-auto mb-4 animate-bounce"></i>
             <h1 class="text-4xl font-extrabold mb-2">Pesanan Berhasil!</h1>
-            <p class="text-lg opacity-90">Terima kasih telah mempercayakan cucian Anda pada BubbleWash.</p>
+            <p class="text-lg opacity-90">Terima kasih telah mempercayakan cucian Anda pada YURE Laundry.</p>
         </div>
         
         <div class="p-8">

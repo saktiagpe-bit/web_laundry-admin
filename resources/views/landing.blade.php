@@ -7,7 +7,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col md:flex-row items-center justify-between">
         <div class="md:w-1/2 text-white">
             <h1 class="text-5xl font-extrabold mb-4 leading-tight">Cucian Bersih,<br>Harum & Rapi!</h1>
-            <p class="text-xl mb-8 opacity-90">BubbleWash hadir untuk menyelesaikan masalah cucian kotor Anda dengan layanan antar-jemput yang cepat dan profesional.</p>
+            <p class="text-xl mb-8 opacity-90">YURE Laundry hadir untuk menyelesaikan masalah cucian kotor Anda dengan layanan antar-jemput yang cepat dan profesional.</p>
             <div class="flex gap-4">
                 <a href="{{ route('register') }}" class="bg-white text-pink-dark px-8 py-3 rounded-full font-bold shadow-lg hover:bg-gray-100 transition duration-300">Mulai Sekarang</a>
                 <a href="#track" class="border-2 border-white text-white px-8 py-3 rounded-full font-bold hover:bg-white hover:text-pink-dark transition duration-300">Cek Status</a>

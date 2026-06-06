@@ -86,8 +86,11 @@
                             @foreach($orders as $order)
                                 <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
                                     <td class="p-4 font-medium text-gray-800">
-                                        <div class="font-bold">{{ $order->transaction_number }}</div>
+                                        <a href="{{ route('dashboard.order-detail', $order->id) }}" class="font-bold text-pink-600 hover:underline">{{ $order->transaction_number }}</a>
                                         <div class="text-[10px] text-gray-400">Tipe: {{ ucfirst($order->order_type ?? 'online') }}</div>
+                                        @if($order->payment && $order->payment->payment_status === 'pending_validation')
+                                            <span class="inline-block mt-1 px-2 py-0.5 bg-yellow-100 text-yellow-700 text-[10px] rounded-full font-bold">Menunggu Validasi</span>
+                                        @endif
                                     </td>
                                     <td class="p-4">
                                         <div class="font-bold text-gray-800">{{ $order->customer_name }}</div>

@@ -43,10 +43,29 @@
             @if($order->payment->payment_method == 'qris' && $order->payment->payment_status == 'unpaid')
                 <div class="bg-gray-50 p-6 rounded-2xl mb-8">
                     <h3 class="font-bold text-gray-800 mb-4">Silakan Pindai QRIS untuk Pembayaran</h3>
-                    <!-- Mock QRIS Image -->
-                    <div class="bg-white w-48 h-48 mx-auto rounded-xl shadow-sm border p-2 flex items-center justify-center">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ $order->transaction_number }}" alt="QRIS" class="w-full h-full object-contain">
+                    <!-- Static QRIS Image -->
+                    <div class="bg-white w-48 h-48 mx-auto rounded-xl shadow-sm border p-2 flex items-center justify-center mb-6">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=QRIS_TOKO_YURE_LAUNDRY_GANTI_GAMBAR_INI" alt="QRIS Toko" class="w-full h-full object-contain">
                     </div>
+                    <p class="text-sm text-gray-500 mb-4">Setelah melakukan pembayaran, silakan unggah tangkapan layar (screenshot) bukti transfer Anda di bawah ini agar kami dapat memproses pesanan.</p>
+                    
+                    <form action="{{ route('dashboard.orders.upload-proof', $order->id) }}" method="POST" enctype="multipart/form-data" class="max-w-sm mx-auto text-left">
+                        @csrf
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Upload Bukti Pembayaran</label>
+                            <input type="file" name="payment_proof" accept="image/*" required class="w-full border-gray-300 rounded-lg p-2 bg-white">
+                            @error('payment_proof') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        </div>
+                        <button type="submit" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition">Kirim Bukti Pembayaran</button>
+                    </form>
+                </div>
+            @elseif($order->payment->payment_method == 'qris' && $order->payment->payment_status == 'pending_validation')
+                <div class="bg-blue-50 p-6 rounded-2xl mb-8 border border-blue-100">
+                    <div class="flex items-center gap-3 text-blue-700 mb-2 justify-center">
+                        <i data-feather="clock" class="w-6 h-6"></i>
+                        <h3 class="font-bold text-lg">Menunggu Validasi Admin</h3>
+                    </div>
+                    <p class="text-blue-600">Bukti pembayaran Anda telah kami terima dan sedang divalidasi oleh admin. Terima kasih!</p>
                 </div>
             @endif
 

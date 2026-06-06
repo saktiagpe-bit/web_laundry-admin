@@ -245,4 +245,26 @@ class AdminController extends Controller
 
         return back()->with('success', 'Status pesanan berhasil diperbarui menjadi ' . $newStatus . '!');
     }
+
+    public function validatePayment(Request $request, Order $order)
+    {
+        if (!Auth::check() || Auth::user()->role !== 'admin') {
+            return redirect()->route('home')->with('error', 'Anda tidak memiliki akses ke halaman admin.');
+        }
+
+        if ($order->payment) {
+            $order->payment->update([
+                'payment_status' => 'paid',
+                'paid_at' => Carbon::now()
+            ]);
+
+            OrderStatus::create([
+                'order_id' => $order->id,
+                'status' => $order->status,
+                'description' => 'Pembayaran telah divalidasi oleh Admin'
+            ]);
+        }
+
+        return back()->with('success', 'Pembayaran berhasil divalidasi!');
+    }
 }

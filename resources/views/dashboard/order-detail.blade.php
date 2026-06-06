@@ -118,6 +118,46 @@
                         </p>
                     </div>
 
+                    @if($order->payment->payment_method == 'qris' && Auth::user()->role !== 'admin')
+                        @if($order->payment->payment_status == 'unpaid')
+                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 mb-6 text-center">
+                                <h4 class="font-bold text-gray-800 mb-2">QRIS Pembayaran</h4>
+                                <div class="bg-white w-32 h-32 mx-auto rounded-lg shadow-sm border p-2 mb-3">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=QRIS_TOKO_YURE_LAUNDRY_GANTI_GAMBAR_INI" alt="QRIS Toko" class="w-full h-full object-contain">
+                                </div>
+                                <form action="{{ route('dashboard.orders.upload-proof', $order->id) }}" method="POST" enctype="multipart/form-data" class="text-left">
+                                    @csrf
+                                    <label class="block text-xs font-bold text-gray-700 mb-1">Upload Bukti Transfer</label>
+                                    <input type="file" name="payment_proof" accept="image/*" required class="w-full text-sm border border-gray-300 rounded-lg p-1.5 bg-white mb-2">
+                                    <button type="submit" class="w-full bg-pink-500 text-white font-bold py-1.5 px-3 text-sm rounded-lg hover:bg-pink-600 transition">Kirim Bukti</button>
+                                </form>
+                            </div>
+                        @elseif($order->payment->payment_status == 'pending_validation')
+                            <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-6 text-center">
+                                <p class="text-sm text-blue-700 font-medium">Bukti pembayaran sedang divalidasi admin.</p>
+                            </div>
+                        @endif
+                    @endif
+
+                    @if(Auth::user()->role === 'admin' && $order->payment && $order->payment->payment_proof)
+                        <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-6">
+                            <h4 class="font-bold text-blue-800 mb-2 flex items-center gap-2"><i data-feather="image" class="w-4 h-4"></i> Bukti Pembayaran</h4>
+                            <div class="bg-white p-2 rounded-lg border shadow-sm mb-3">
+                                <a href="{{ asset('storage/' . $order->payment->payment_proof) }}" target="_blank">
+                                    <img src="{{ asset('storage/' . $order->payment->payment_proof) }}" alt="Bukti Pembayaran" class="w-full h-auto rounded object-cover max-h-48 cursor-pointer hover:opacity-90">
+                                </a>
+                            </div>
+                            @if($order->payment->payment_status === 'pending_validation')
+                                <form action="{{ route('admin.orders.validate-payment', $order->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="w-full bg-green-500 text-white font-bold py-2 px-3 text-sm rounded-lg hover:bg-green-600 transition flex justify-center items-center gap-2">
+                                        <i data-feather="check-circle" class="w-4 h-4"></i> Validasi Pembayaran
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
+                    @endif
+
                     <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
                         <h4 class="font-bold text-gray-800 mb-3">Rincian Layanan</h4>
                         @foreach($order->items as $item)

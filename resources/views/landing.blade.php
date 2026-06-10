@@ -42,9 +42,15 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
             @foreach($services->take(4) as $service)
             <div class="bg-pink-soft rounded-2xl p-6 text-center hover:shadow-xl transition duration-300 transform hover:-translate-y-2 border border-pink-100">
+                @if($service->image_path)
+                <div class="bg-white w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 shadow-sm text-pink-500 overflow-hidden">
+                    <img src="{{ filter_var($service->image_path, FILTER_VALIDATE_URL) ? $service->image_path : asset($service->image_path) }}" alt="{{ $service->name }}" class="w-full h-full object-cover">
+                </div>
+                @else
                 <div class="bg-white w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 shadow-sm text-pink-500">
                     <i data-feather="star"></i>
                 </div>
+                @endif
                 <h3 class="text-xl font-bold text-gray-800 mb-2">{{ $service->name }}</h3>
                 <p class="text-gray-600 text-sm mb-4">{{ Str::limit($service->description, 50) }}</p>
                 <div class="text-pink-dark font-bold text-lg mb-4">Rp {{ number_format($service->price, 0, ',', '.') }}</div>

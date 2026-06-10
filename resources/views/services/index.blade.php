@@ -10,9 +10,15 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         @foreach($services as $service)
         <div class="bg-white rounded-3xl overflow-hidden shadow-lg border border-pink-100 hover:shadow-2xl transition duration-300 flex flex-col">
+            @if($service->image_path)
+            <div class="h-40 bg-pink-100 flex items-center justify-center overflow-hidden">
+                <img src="{{ filter_var($service->image_path, FILTER_VALIDATE_URL) ? $service->image_path : asset($service->image_path) }}" alt="{{ $service->name }}" class="w-full h-full object-cover">
+            </div>
+            @else
             <div class="h-40 bg-pink-100 flex items-center justify-center text-pink-300">
                 <i data-feather="image" class="w-16 h-16 opacity-50"></i>
             </div>
+            @endif
             <div class="p-6 flex-grow flex flex-col">
                 <h3 class="text-xl font-bold text-gray-800 mb-2">{{ $service->name }}</h3>
                 <p class="text-gray-600 text-sm mb-4 flex-grow">{{ $service->description }}</p>

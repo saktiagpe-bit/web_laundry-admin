@@ -37,7 +37,7 @@
                                     <form action="{{ route('cart.update') }}" method="POST" class="flex items-center justify-center gap-2">
                                         @csrf
                                         <input type="hidden" name="service_id" value="{{ $id }}">
-                                        <input type="number" name="quantity" value="{{ $details['quantity'] }}" min="1" class="w-16 border-gray-300 rounded-lg px-2 py-1 text-center bg-gray-50 border">
+                                        <input type="number" name="quantity" value="{{ $details['quantity'] }}" min="1" class="w-16 border-gray-300 rounded-lg px-2 py-1 text-center bg-gray-50 border" onchange="this.form.submit()">
                                         <button type="submit" class="text-blue-500 hover:text-blue-700 p-1 bg-blue-50 rounded-lg"><i data-feather="refresh-cw" class="w-4 h-4"></i></button>
                                     </form>
                                 </td>

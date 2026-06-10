@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/orders', [DashboardController::class, 'orders'])->name('dashboard.orders');
     Route::get('/dashboard/orders/{order}', [DashboardController::class, 'orderDetail'])->name('dashboard.order-detail');
     Route::post('/dashboard/orders/{order}/status', [DashboardController::class, 'updateStatus'])->name('dashboard.orders.update-status');
+    Route::post('/dashboard/orders/{order}/upload-proof', [DashboardController::class, 'uploadProof'])->name('dashboard.orders.upload-proof');
     Route::get('/dashboard/profile', [DashboardController::class, 'profile'])->name('dashboard.profile');
     Route::post('/dashboard/profile', [DashboardController::class, 'updateProfile'])->name('dashboard.update-profile');
 
@@ -56,4 +57,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/reports', [\App\Http\Controllers\AdminController::class, 'reports'])->name('admin.reports');
     Route::get('/admin/orders', [\App\Http\Controllers\AdminController::class, 'orders'])->name('admin.orders');
     Route::post('/admin/orders/{order}/status', [\App\Http\Controllers\AdminController::class, 'updateStatus'])->name('admin.orders.update-status');
+    Route::post('/admin/orders/{order}/validate-payment', [\App\Http\Controllers\AdminController::class, 'validatePayment'])->name('admin.orders.validate-payment');
 });

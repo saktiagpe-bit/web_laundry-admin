@@ -86,8 +86,11 @@
                             @foreach($orders as $order)
                                 <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
                                     <td class="p-4 font-medium text-gray-800">
-                                        <div class="font-bold">{{ $order->transaction_number }}</div>
+                                        <a href="{{ route('dashboard.order-detail', $order->id) }}" class="font-bold text-pink-600 hover:underline">{{ $order->transaction_number }}</a>
                                         <div class="text-[10px] text-gray-400">Tipe: {{ ucfirst($order->order_type ?? 'online') }}</div>
+                                        @if($order->payment && $order->payment->payment_status === 'pending_validation')
+                                            <span class="inline-block mt-1 px-2 py-0.5 bg-yellow-100 text-yellow-700 text-[10px] rounded-full font-bold">Menunggu Validasi</span>
+                                        @endif
                                     </td>
                                     <td class="p-4">
                                         <div class="font-bold text-gray-800">{{ $order->customer_name }}</div>
@@ -114,6 +117,9 @@
                                             @csrf
                                             <select name="status" onchange="this.form.submit()" class="px-2 py-1.5 border border-gray-300 rounded-xl text-xs bg-gray-50 text-gray-700 focus:outline-none focus:ring-1 focus:ring-pink-500">
                                                 <option value="Antre" {{ $order->status === 'Antre' ? 'selected' : '' }}>Antre</option>
+                                                <option value="Dicuci" {{ $order->status === 'Dicuci' ? 'selected' : '' }}>Dicuci</option>
+                                                <option value="Disetrika" {{ $order->status === 'Disetrika' ? 'selected' : '' }}>Disetrika</option>
+                                                <option value="Siap Diambil/Diantar" {{ $order->status === 'Siap Diambil/Diantar' ? 'selected' : '' }}>Siap Diambil/Diantar</option>
                                                 <option value="Diproses" {{ $order->status === 'Diproses' ? 'selected' : '' }}>Diproses</option>
                                                 <option value="Selesai" {{ $order->status === 'Selesai' ? 'selected' : '' }}>Selesai</option>
                                                 <option value="Batal" {{ $order->status === 'Batal' ? 'selected' : '' }}>Batal</option>

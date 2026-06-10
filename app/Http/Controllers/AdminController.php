@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Models\Payment;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -20,22 +21,34 @@ class AdminController extends Controller
         $year = $request->input('year', date('Y'));
         $month = $request->input('month', date('m'));
 
+        $isSqlite = DB::getDriverName() === 'sqlite';
+
         // Base query for completed orders
         $query = Order::where('status', 'Selesai');
 
         $chartLabels = [];
         $chartData = [];
 
-        // SQLite-compatible queries
+        // DB driver-compatible queries
         if ($timeframe === 'daily') {
             // Filter by year and month
-            $query->whereRaw("strftime('%Y', completed_at) = ?", [$year])
-                  ->whereRaw("strftime('%m', completed_at) = ?", [$month]);
+            if ($isSqlite) {
+                $query->whereRaw("strftime('%Y', completed_at) = ?", [$year])
+                      ->whereRaw("strftime('%m', completed_at) = ?", [$month]);
 
-            $results = $query->selectRaw("strftime('%d', completed_at) as label, SUM(total_price) as total")
-                             ->groupBy('label')
-                             ->orderBy('label', 'asc')
-                             ->get();
+                $results = $query->selectRaw("strftime('%d', completed_at) as label, SUM(total_price) as total")
+                                 ->groupBy('label')
+                                 ->orderBy('label', 'asc')
+                                 ->get();
+            } else {
+                $query->whereRaw("to_char(completed_at, 'YYYY') = ?", [$year])
+                      ->whereRaw("to_char(completed_at, 'MM') = ?", [$month]);
+
+                $results = $query->selectRaw("to_char(completed_at, 'DD') as label, SUM(total_price) as total")
+                                 ->groupBy('label')
+                                 ->orderBy('label', 'asc')
+                                 ->get();
+            }
 
             // Populate all days of the selected month with 0 as default
             $daysInMonth = cal_days_in_month(CAL_GREGORIAN, (int)$month, (int)$year);
@@ -54,12 +67,21 @@ class AdminController extends Controller
             $chartData = array_values($chartData);
 
         } else if ($timeframe === 'weekly') {
-            $query->whereRaw("strftime('%Y', completed_at) = ?", [$year]);
+            if ($isSqlite) {
+                $query->whereRaw("strftime('%Y', completed_at) = ?", [$year]);
 
-            $results = $query->selectRaw("strftime('%W', completed_at) as label, SUM(total_price) as total")
-                             ->groupBy('label')
-                             ->orderBy('label', 'asc')
-                             ->get();
+                $results = $query->selectRaw("strftime('%W', completed_at) as label, SUM(total_price) as total")
+                                 ->groupBy('label')
+                                 ->orderBy('label', 'asc')
+                                 ->get();
+            } else {
+                $query->whereRaw("to_char(completed_at, 'YYYY') = ?", [$year]);
+
+                $results = $query->selectRaw("to_char(completed_at, 'IW') as label, SUM(total_price) as total")
+                                 ->groupBy('label')
+                                 ->orderBy('label', 'asc')
+                                 ->get();
+            }
 
             // Populate all 52 weeks
             for ($w = 1; $w <= 52; $w++) {
@@ -81,12 +103,21 @@ class AdminController extends Controller
             $chartData = array_values($chartData);
 
         } else if ($timeframe === 'monthly') {
-            $query->whereRaw("strftime('%Y', completed_at) = ?", [$year]);
+            if ($isSqlite) {
+                $query->whereRaw("strftime('%Y', completed_at) = ?", [$year]);
 
-            $results = $query->selectRaw("strftime('%m', completed_at) as label, SUM(total_price) as total")
-                             ->groupBy('label')
-                             ->orderBy('label', 'asc')
-                             ->get();
+                $results = $query->selectRaw("strftime('%m', completed_at) as label, SUM(total_price) as total")
+                                 ->groupBy('label')
+                                 ->orderBy('label', 'asc')
+                                 ->get();
+            } else {
+                $query->whereRaw("to_char(completed_at, 'YYYY') = ?", [$year]);
+
+                $results = $query->selectRaw("to_char(completed_at, 'MM') as label, SUM(total_price) as total")
+                                 ->groupBy('label')
+                                 ->orderBy('label', 'asc')
+                                 ->get();
+            }
 
             $monthNames = [
                 '01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => 'April',
@@ -108,10 +139,17 @@ class AdminController extends Controller
             $chartData = array_values($chartData);
 
         } else { // yearly
-            $results = $query->selectRaw("strftime('%Y', completed_at) as label, SUM(total_price) as total")
-                             ->groupBy('label')
-                             ->orderBy('label', 'asc')
-                             ->get();
+            if ($isSqlite) {
+                $results = $query->selectRaw("strftime('%Y', completed_at) as label, SUM(total_price) as total")
+                                 ->groupBy('label')
+                                 ->orderBy('label', 'asc')
+                                 ->get();
+            } else {
+                $results = $query->selectRaw("to_char(completed_at, 'YYYY') as label, SUM(total_price) as total")
+                                 ->groupBy('label')
+                                 ->orderBy('label', 'asc')
+                                 ->get();
+            }
 
             foreach ($results as $row) {
                 $chartLabels[] = $row->label;
@@ -123,10 +161,19 @@ class AdminController extends Controller
         $detailQuery = Order::where('status', 'Selesai')->orderBy('completed_at', 'desc');
 
         if ($timeframe === 'daily') {
-            $detailQuery->whereRaw("strftime('%Y', completed_at) = ?", [$year])
-                        ->whereRaw("strftime('%m', completed_at) = ?", [$month]);
+            if ($isSqlite) {
+                $detailQuery->whereRaw("strftime('%Y', completed_at) = ?", [$year])
+                            ->whereRaw("strftime('%m', completed_at) = ?", [$month]);
+            } else {
+                $detailQuery->whereRaw("to_char(completed_at, 'YYYY') = ?", [$year])
+                            ->whereRaw("to_char(completed_at, 'MM') = ?", [$month]);
+            }
         } else if ($timeframe === 'weekly' || $timeframe === 'monthly') {
-            $detailQuery->whereRaw("strftime('%Y', completed_at) = ?", [$year]);
+            if ($isSqlite) {
+                $detailQuery->whereRaw("strftime('%Y', completed_at) = ?", [$year]);
+            } else {
+                $detailQuery->whereRaw("to_char(completed_at, 'YYYY') = ?", [$year]);
+            }
         }
 
         $transactions = $detailQuery->get();
@@ -161,7 +208,7 @@ class AdminController extends Controller
             return redirect()->route('home')->with('error', 'Anda tidak memiliki akses ke halaman admin.');
         }
         $request->validate([
-            'status' => 'required|in:Antre,Diproses,Selesai,Batal'
+            'status' => 'required|in:Antre,Diproses,Dicuci,Disetrika,Siap Diambil/Diantar,Selesai,Batal'
         ]);
 
         $oldStatus = $order->status;
@@ -197,5 +244,27 @@ class AdminController extends Controller
         ]);
 
         return back()->with('success', 'Status pesanan berhasil diperbarui menjadi ' . $newStatus . '!');
+    }
+
+    public function validatePayment(Request $request, Order $order)
+    {
+        if (!Auth::check() || Auth::user()->role !== 'admin') {
+            return redirect()->route('home')->with('error', 'Anda tidak memiliki akses ke halaman admin.');
+        }
+
+        if ($order->payment) {
+            $order->payment->update([
+                'payment_status' => 'paid',
+                'paid_at' => Carbon::now()
+            ]);
+
+            OrderStatus::create([
+                'order_id' => $order->id,
+                'status' => $order->status,
+                'description' => 'Pembayaran telah divalidasi oleh Admin'
+            ]);
+        }
+
+        return back()->with('success', 'Pembayaran berhasil divalidasi!');
     }
 }

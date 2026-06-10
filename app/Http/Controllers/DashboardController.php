@@ -124,4 +124,28 @@ class DashboardController extends Controller
 
         return back()->with('success', 'Status pesanan dan pembayaran berhasil diperbarui!');
     }
+
+    public function uploadProof(Request $request, Order $order)
+    {
+        if ($order->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $request->validate([
+            'payment_proof' => 'required|image|max:10240',
+        ]);
+
+        if ($request->hasFile('payment_proof')) {
+            $path = $request->file('payment_proof')->store('payment_proofs', 'public');
+            
+            if ($order->payment) {
+                $order->payment->update([
+                    'payment_proof' => $path,
+                    'payment_status' => 'pending_validation'
+                ]);
+            }
+        }
+
+        return back()->with('success', 'Bukti pembayaran berhasil diunggah. Menunggu validasi admin.');
+    }
 }

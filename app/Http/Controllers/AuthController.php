@@ -45,6 +45,9 @@ class AuthController extends Controller
             'phone' => 'required|string|max:20|unique:users',
             'gender' => 'required|in:male,female',
             'address' => 'required|string',
+        ], [
+            'email.unique' => 'Akun sudah terdaftar, silakan login.',
+            'phone.unique' => 'Nomor HP sudah terdaftar, silakan login.',
         ]);
 
         $user = User::create([

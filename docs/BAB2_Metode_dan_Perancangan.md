@@ -1,7 +1,7 @@
 # BAB 2: METODE PENELITIAN DAN PERANCANGAN SISTEM
 
 ## 2.1 Metode Penelitian
-Penelitian rancang bangun sistem informasi pelayanan dan promosi laundry ini menggunakan metode rekayasa perangkat lunak berbasis **System Development Life Cycle (SDLC)** dengan model **Agile** menggunakan framework **Scrum**. Pilihan ini didasarkan pada kebutuhan pengembangan sistem yang adaptif, kolaboratif, serta membutuhkan iterasi yang cepat agar fitur *real-time tracking* dan antarmuka pelayanan dapat diselesaikan secara inkremental dan diuji secara berkelanjutan. Menurut Hidayat & Widianto (2021), Scrum adalah salah satu kerangka kerja Agile yang paling dominan digunakan dalam rekayasa perangkat lunak karena sifatnya yang kolaboratif dan adaptif terhadap perubahan fungsionalitas produk. Penerapan Scrum pada sistem pelayanan laundry terbukti mampu mengoptimalkan pembagian kerja dalam siklus Sprint secara terukur (Fahmi & Hermawan, 2022).
+Penelitian rancang bangun sistem informasi pelayanan dan promosi laundry ini menggunakan metode rekayasa perangkat lunak berbasis **System Development Life Cycle (SDLC)** dengan model **Agile** menggunakan framework **Scrum**. Pilihan ini didasarkan pada kebutuhan pengembangan sistem yang adaptif, kolaboratif, serta membutuhkan iterasi yang cepat agar fitur *real-time tracking* dan antarmuka pelayanan dapat diselesaikan secara inkremental dan diuji secara berkelanjutan. Menurut Hilmyansyah dkk. (2022), Scrum adalah salah satu kerangka kerja Agile yang paling dominan digunakan dalam rekayasa perangkat lunak karena sifatnya yang kolaboratif dan adaptif terhadap perubahan fungsionalitas produk. Penerapan Scrum pada perancangan sistem informasi berbasis web terbukti mampu mengoptimalkan pembagian kerja dalam siklus Sprint secara terukur (Mardika & Fauzi, 2022).
 
 Scrum membagi proses pengembangan ke dalam siklus kerja berulang yang disebut *Sprint* (biasanya berdurasi 1 hingga 2 minggu). Alur siklus pengembangan menggunakan model Scrum yang diterapkan dalam penelitian ini digambarkan secara visual pada Gambar 2.1.
 
@@ -23,7 +23,7 @@ graph LR
     RT --> INC["Inkrement Produk<br>(Aplikasi Siap Pakai)"]:::phaseStyle
     INC --> PB
 ```
-*Gambar 2.1: Siklus Pengembangan Agile Scrum pada Sistem BubbleWash*
+*Gambar 2.1: Siklus Pengembangan Agile Scrum pada Sistem YURE Laundry*
 
 Penjelasan rincian tahapan implementasi Scrum pada penelitian ini adalah sebagai berikut:
 
@@ -45,7 +45,7 @@ Penjelasan rincian tahapan implementasi Scrum pada penelitian ini adalah sebagai
 ## 2.2 Perancangan Sistem
 
 ### 2.2.1 Arsitektur Sistem
-Sistem dibangun menggunakan arsitektur *hybrid client-server* yang mengintegrasikan framework Laravel sebagai pengendali logika bisnis utama (*main controller*) dan antarmuka dinamis dengan Supabase sebagai penyedia infrastruktur basis data awan berbasis PostgreSQL serta WebSocket server mandiri. Framework Laravel dipilih karena memiliki fungsionalitas arsitektur MVC (Model-View-Controller) yang tangguh dan mempermudah percepatan pengembangan kode program pelayanan laundry (Utami & Praja, 2023; Setyawan & Rahayu, 2023).
+Sistem dibangun menggunakan arsitektur *hybrid client-server* yang mengintegrasikan framework Laravel sebagai pengendali logika bisnis utama (*main controller*) dan antarmuka dinamis dengan Supabase sebagai penyedia infrastruktur basis data awan berbasis PostgreSQL serta WebSocket server mandiri. Framework Laravel dipilih karena memiliki fungsionalitas arsitektur MVC (Model-View-Controller) yang tangguh dan mempermudah percepatan pengembangan kode program pelayanan laundry (Utami & Praja, 2023; Putra dkk., 2021).
 
 Gambar 2.2 menunjukkan skema aliran data integrasi Laravel dan Supabase Realtime.
 
@@ -89,7 +89,7 @@ graph TD
 Cara kerja mekanisme pelacakan real-time ini dijabarkan sebagai berikut:
 1.  **Pemicu (*Trigger*) Perubahan**: Ketika kasir mengubah status pengerjaan pakaian pada panel admin Laravel (misal: mengubah status order dari "Antre" menjadi "Diproses"), Laravel akan mengirimkan query pembaruan ke database PostgreSQL Supabase.
 2.  **Pemantauan WAL (*Write-Ahead Log*)**: Supabase secara aktif mendengarkan berkas WAL PostgreSQL. Setiap operasi `INSERT` baru pada tabel `order_statuses` didekode secara instan oleh Supabase Realtime.
-3.  **Penyiaran WebSocket**: Supabase Realtime memancarkan event perubahan data tersebut dalam format JSON melalui koneksi WebSocket yang *persistent* ke kanal (*channel*) berlangganan. Penggunaan protokol WebSocket memungkinkan transfer data dua arah secara asinkron dengan overhead minimal (Saputra & Wibowo, 2025; Santoso & Wijaya, 2023).
+3.  **Penyiaran WebSocket**: Supabase Realtime memancarkan event perubahan data tersebut dalam format JSON melalui koneksi WebSocket yang *persistent* ke kanal (*channel*) berlangganan. Implementasi pelacakan secara *real-time* terbukti dapat mengeliminasi ketidakpastian informasi proses pengerjaan cucian bagi pelanggan (Nugraha & Alfarid, 2025). Untuk mendukung hal tersebut, digunakan protokol WebSocket yang memungkinkan pertukaran data dua arah secara asinkron dengan overhead minimal dan performa latensi yang jauh lebih rendah dibandingkan HTTP polling (Sari & Setiawan, 2021).
 4.  **Penerimaan di Sisi Klien**: Halaman web pelacakan pelanggan yang memuat pustaka `@supabase/supabase-js` menerima payload data tersebut secara asinkron, kemudian memanipulasi elemen DOM (progress bar / stepper) untuk menampilkan status terbaru secara instan tanpa perlu me-refresh halaman web.
 
 ---
@@ -108,7 +108,7 @@ graph LR
     Pelanggan((Pelanggan)):::actorStyle
     Admin((Admin/Kasir)):::actorStyle
 
-    subgraph BubbleWash ["SISTEM INFORMASI LAUNDRY BUBBLEWASH"]
+    subgraph YureLaundry ["SISTEM INFORMASI LAUNDRY YURE LAUNDRY"]
         U1["Registrasi & Login Akun"]
         U2["Melihat Informasi & Promosi Layanan"]
         U3["Mengelola Keranjang Belanja"]
@@ -134,7 +134,7 @@ graph LR
     Admin --> U8
     Admin --> U9
 ```
-*Gambar 2.3: Use Case Diagram Aplikasi BubbleWash*
+*Gambar 2.3: Use Case Diagram Aplikasi YURE Laundry*
 
 Aktor dalam sistem ini memiliki deskripsi peran sebagai berikut:
 *   **Pelanggan**: Mengakses halaman utama untuk melihat harga pelayanan dan promosi. Pelanggan terdaftar dapat memesan layanan dengan memasukkan barang ke keranjang belanja, menentukan lokasi penjemputan/pengantaran pakaian pada peta interaktif, melakukan checkout transaksi, dan menggunakan kode resi untuk melacak cucian mereka secara real-time.
@@ -176,7 +176,7 @@ graph TD
 ---
 
 ### 2.2.4 Perancangan Basis Data (Entity Relationship Diagram - ERD)
-Perancangan basis data didasarkan pada hubungan relasional antar entitas dalam mendukung transaksi laundry terdigitalisasi secara terpusat. Untuk menjamin integritas data serta meminimalisir redundansi data dalam penyimpanan database PostgreSQL Supabase, perancangan ERD dilakukan dengan mengikuti kaidah normalisasi database (Fathansyah, 2018).
+Perancangan basis data didasarkan pada hubungan relasional antar entitas dalam mendukung transaksi laundry terdigitalisasi secara terpusat. Untuk menjamin integritas data serta meminimalisir redundansi data dalam penyimpanan database PostgreSQL Supabase, perancangan ERD dilakukan dengan mengikuti kaidah normalisasi database (Setiyadi, 2018).
 
 Gambar 2.5 menyajikan Entity Relationship Diagram (ERD) fisik yang menggambarkan struktur tabel, atribut, tipe data, serta kardinalitas relasi antar entitas yang diimplementasikan pada database PostgreSQL Supabase secara utuh.
 
@@ -273,7 +273,7 @@ erDiagram
         timestamp updated_at
     }
 ```
-*Gambar 2.5: Entity Relationship Diagram (ERD) Sistem Informasi Laundry BubbleWash*
+*Gambar 2.5: Entity Relationship Diagram (ERD) Sistem Informasi Laundry YURE Laundry*
 
 Adapun penjelasan relasi logis antar entitas pada Gambar 2.5 adalah sebagai berikut:
 1.  **Relasi `USERS` ke `ORDERS` (1 to Many)**: Seorang pelanggan (`users`) dapat memiliki banyak transaksi pesanan (`orders`) laundry, namun satu pesanan hanya dimiliki oleh satu pelanggan terdaftar.
@@ -286,7 +286,7 @@ Adapun penjelasan relasi logis antar entitas pada Gambar 2.5 adalah sebagai beri
 ---
 
 ### 2.2.5 Perancangan Antarmuka (UI/UX)
-Perancangan visual aplikasi BubbleWash mengadopsi tema estetika modern **"Pink Cute & Clean"** untuk menarik pasar target utama (kelompok mahasiswa dan rumah tangga urban). 
+Perancangan visual aplikasi YURE Laundry mengadopsi tema estetika modern "Pink Cute & Clean" untuk menarik pasar target utama (kelompok mahasiswa dan rumah tangga urban). 
 
 Beberapa rancangan tata letak antarmuka utama meliputi:
 1.  **Halaman Publik Layanan (`/services`)**: Menampilkan deretan kartu grid transparan (*glassmorphism*) yang menyajikan nama layanan, harga transparan, deskripsi, dan tombol tambah ke keranjang.
@@ -299,10 +299,11 @@ Beberapa rancangan tata letak antarmuka utama meliputi:
 
 Berikut adalah referensi jurnal nasional Indonesia ber-ISSN/terindeks yang dapat disalin ke daftar pustaka laporan akhir Anda untuk mendukung kutipan di Bab 2:
 
-*   Fahmi, A., & Hermawan, A. (2022). Penerapan Metode Scrum dalam Pengembangan Sistem Informasi Pelayanan Laundry. *Jurnal Teknik Informatika (JUTIF)*, 3(4), 1021-1030.
-*   Fathansyah. (2018). *Basis Data* (Edisi Revisi). Informatika Bandung.
+*   Setiyadi, D. (2018). Normalisasi Dalam Perancangan Basis Data Relasional Purchase Order (PO). *Informatics for Educators and Professionals: Journal of Informatics*, 3(1), 51-60.
+*   Hilmyansyah, M., Malabay, M., Simorangkir, H., & Yulhendri, Y. (2022). Implementasi Metode Scrum Pada Pembangunan Sistem Informasi Monitoring Progress Proyek Berbasis Web (Studi Kasus: PT Quatra Engineering Mandiri). *IKRA-ITH Informatika: Jurnal Komputer dan Informatika*, 6(3), 253-262.
 *   Hidayat, R., & Widianto, K. (2021). Penerapan Metode Agile Scrum Pada Pengembangan Aplikasi Sistem Informasi. *Jurnal Teknologi dan Sistem Informasi (JTIS)*, 2(1), 35-43.
-*   Santoso, H., & Wijaya, Y. (2023). Pemanfaatan Teknologi WebSockets untuk Sinkronisasi Data Real-Time pada Aplikasi Pelayanan. *Jurnal Teknologi Informasi dan Komunikasi (JTIK)*, 7(3), 245-254.
-*   Saputra, M. R., & Wibowo, S. (2025). Implementasi Supabase Realtime Database dalam Sistem Tracking Pengiriman Barang. *Jurnal Rekayasa Perangkat Lunak (Jurnal RPL)*, 6(1), 12-21.
-*   Setyawan, D., & Rahayu, S. (2023). Pengembangan Sistem Informasi Pelayanan Laundry Menggunakan Framework Laravel. *Jurnal Ilmiah Komputer dan Informatika (JIKOM)*, 2(2), 75-84.
+*   Mardika, P. D., & Fauzi, A. (2022). Implementasi Metode Scrum Pada Perancangan Sistem Informasi Tata Usaha Sekolah Berbasis Web. *Jurnal Publikasi Teknik Informatika*, 1(1), 1-10.
+*   Nugraha, M., & Alfarid, M. N. N. (2025). Implementation of Web-Based Real-Time Laundry Status Tracking System. *Journal of Information Technology and Its Utilization (JITU)*, 8(2), 45-51.
+*   Putra, A. D., Sakethi, D., & Ardiansyah, A. (2021). Pengembangan Sistem Pengelolaan Laundry Berbasis Web (Studi Kasus Arin Laundry). *Jurnal Pepadun*, 2(1), 89-98.
+*   Sari, M. P., & Setiawan, A. (2021). Penerapan Websocket pada Sistem Live Chat berbasis Web (Studi Kasus Website Kwikku.com). *Jurnal Pengembangan Teknologi Informasi dan Ilmu Komputer*, 5(12).
 *   Utami, L. A., & Praja, H. D. (2023). Sistem Informasi Pelayanan Laundry Berbasis Web pada CV. Indorrama Bogor. *Jurnal Teknoinfo*, 17(2), 398–407.

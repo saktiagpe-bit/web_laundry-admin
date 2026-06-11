@@ -29,8 +29,19 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
+// ==========================================
+// UNCOMMENT BARIS DI BAWAH INI DAN COMMENT OUT "Route::middleware('auth')->group..." UNTUK MENGAKTIFKAN OTP PROTEKSI:
+// Route::middleware(['auth', 'verified.phone'])->group(function () {
+// ==========================================
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    // ==========================================
+    // UNCOMMENT BARIS DI BAWAH INI UNTUK MENGAKTIFKAN ROUTE OTP:
+    // Route::get('/otp', [OTPController::class, 'index'])->name('otp.index');
+    // Route::post('/otp/send', [OTPController::class, 'send'])->name('otp.send');
+    // Route::post('/otp/verify', [OTPController::class, 'verify'])->name('otp.verify');
+    // ==========================================
 
     // Protected Routes (Must be logged in)
     // Cart
@@ -59,3 +70,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/orders/{order}/status', [\App\Http\Controllers\AdminController::class, 'updateStatus'])->name('admin.orders.update-status');
     Route::post('/admin/orders/{order}/validate-payment', [\App\Http\Controllers\AdminController::class, 'validatePayment'])->name('admin.orders.validate-payment');
 });
+// ==========================================
+// UNCOMMENT PENUTUP GRUP DI BAWAH INI JIKA MENGAKTIFKAN GRUP MIDDLEWARE OTP DI ATAS:
+// });
+// ==========================================

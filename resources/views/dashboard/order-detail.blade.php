@@ -187,20 +187,59 @@
 </div>
 
 @push('scripts')
+<!-- Supabase JS SDK via CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const orderId = "{{ $order->id }}";
         const currentStatus = "{{ $order->status }}";
         
-        setInterval(function() {
-            fetch(`/orders/${orderId}/status`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status && data.status !== currentStatus) {
+        // Ambil credentials Supabase dari environment Laravel
+        const supabaseUrl = "{{ env('VITE_SUPABASE_URL') }}";
+        const supabaseKey = "{{ env('VITE_SUPABASE_ANON_KEY') }}";
+        
+        let usingRealtime = false;
+        
+        if (supabaseUrl && supabaseKey) {
+            try {
+                const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+                
+                // Berlangganan ke perubahan tabel order_statuses
+                const channel = supabaseClient
+                    .channel('order-status-updates-dashboard')
+                    .on('postgres_changes', {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'order_statuses',
+                        filter: `order_id=eq.${orderId}`
+                    }, (payload) => {
+                        console.log('Perubahan status terdeteksi via Realtime WebSocket:', payload);
                         window.location.reload();
-                    }
-                })
-                .catch(err => console.error('Error checking order status:', err));
+                    })
+                    .subscribe((status) => {
+                        if (status === 'SUBSCRIBED') {
+                            usingRealtime = true;
+                            console.log('Koneksi terhubung ke Supabase Realtime WebSocket!');
+                        }
+                    });
+            } catch (err) {
+                console.error('Gagal menginisialisasi Supabase Realtime:', err);
+            }
+        }
+        
+        // Fallback: Gunakan HTTP Polling (4 detik) jika Realtime WebSocket tidak aktif
+        setInterval(function() {
+            if (!usingRealtime) {
+                fetch(`/orders/${orderId}/status`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status && data.status !== currentStatus) {
+                            console.log('Perubahan status terdeteksi via HTTP Polling');
+                            window.location.reload();
+                        }
+                    })
+                    .catch(err => console.error('Error checking order status:', err));
+            }
         }, 4000);
     });
 </script>

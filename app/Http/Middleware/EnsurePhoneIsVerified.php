@@ -15,6 +15,13 @@ class EnsurePhoneIsVerified
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // ==========================================
+        // UNCOMMENT BLOK DI BAWAH INI UNTUK MENGAKTIFKAN REDIRECT OTP JIKA BELUM VERIFIKASI:
+        // if ($request->user() && !$request->user()->phone_verified_at) {
+        //     return redirect()->route('otp.index');
+        // }
+        // ==========================================
+
         return $next($request);
     }
 }

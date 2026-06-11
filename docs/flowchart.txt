@@ -1,0 +1,64 @@
+REKOMENDASI PENEMPATAN FLOWCHART
+
+Di dalam dokumen draf artikel ilmiah Anda, flowchart paling tepat ditambahkan pada:
+BAB 2: METODE PENELITIAN DAN PERANCANGAN SISTEM
+Sub-bab 2.2 Perancangan Sistem
+
+Penempatan disarankan disisipkan di antara Use Case Diagram dan Activity Diagram:
+* Sub-bab 2.2.2 Use Case Diagram
+* Sub-bab 2.2.3 Flowchart Alur Sistem (User & Admin) -- PENEMPATAN BARU
+* Sub-bab 2.2.4 Activity Diagram Pelacakan Real-Time -- (Sebelumnya 2.2.3)
+* Sub-bab 2.2.5 Perancangan Basis Data (ERD) -- (Sebelumnya 2.2.4)
+
+Alasan penempatan ini adalah karena flowchart menggambarkan alur logika operasional dari sudut pandang aktor (User dan Admin) secara berurutan, sebelum kemudian dijelaskan lebih rinci pada sinkronisasi teknis (Activity Diagram) dan struktur data (ERD).
+
+***
+
+KODE MERMAID LIVE UNTUK FLOWCHART
+
+1. FLOWCHART USER (PELANGGAN)
+
+%%{init: {'theme': 'neutral'}}%%
+graph TD
+    A([Mulai]) --> B[Buka Website YURE Laundry]
+    B --> C{Sudah Login?}
+    C -- Tidak --> D[Daftar Akun / Login]
+    D --> E[Verifikasi Nomor Telepon via OTP]
+    E --> F[Pilih Layanan & Masukkan ke Keranjang]
+    C -- Ya --> F
+    F --> G[Tentukan Lokasi Antar-Jemput di Peta Leaflet.js]
+    G --> H[Checkout & Pilih Metode Pembayaran Tunai/QRIS]
+    H --> I[Sistem Membuat Resi Transaksi Baru]
+    I --> J[Buka Halaman Pelacakan Real-Time]
+    J --> K[Sistem Menghubungkan ke WebSocket Supabase]
+    K --> L{Status = Selesai?}
+    L -- Tidak --> M[Tunggu Pembaruan Status Real-Time]
+    M --> L
+    L -- Ya --> N[Pakaian Diterima Pelanggan]
+    N --> O([Selesai])
+
+
+2. FLOWCHART ADMIN / KASIR
+
+%%{init: {'theme': 'neutral'}}%%
+graph TD
+    A([Mulai]) --> B[Login Dashboard Admin]
+    B --> C[Lihat Daftar Pesanan Masuk]
+    C --> D{Jenis Pengiriman?}
+    D -- Kurir Penjemputan --> E[Ubah Status: Penjemputan Kurir]
+    E --> F[Kirim Update ke Database Supabase]
+    D -- Non-Kurir / Antre --> G[Status Awal: Antrean]
+    G --> H[Ubah Status: Diproses Cuci/Setrika]
+    F --> H
+    H --> I[Kirim Update ke Database Supabase]
+    I --> J[Pemicu WAL PostgreSQL mengirim ke WebSocket]
+    J --> K{Konfirmasi Pembayaran?}
+    K -- QRIS --> L[Verifikasi Pembayaran via Sistem]
+    K -- Tunai --> M[Terima Uang Tunai dari Pelanggan]
+    L --> N[Ubah Status Pembayaran: Lunas paid]
+    M --> N
+    N --> O[Ubah Status Cucian: Siap Diambil / Pengantaran]
+    O --> P[Kirim Update ke Database Supabase]
+    P --> Q[Ubah Status Cucian: Selesai]
+    Q --> R[Sistem Mencatat Waktu Selesai completed_at]
+    R --> S([Selesai])

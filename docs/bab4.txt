@@ -1,0 +1,13 @@
+BAB 4: KESIMPULAN DAN SARAN
+
+4.1 Kesimpulan
+Berdasarkan hasil rancang bangun, pengujian, dan analisis yang telah dilakukan pada sistem informasi pelayanan dan promosi laundry "YURE Laundry", maka dapat ditarik beberapa kesimpulan sebagai berikut:
+1. Sistem informasi pelayanan laundry berbasis web berhasil dikembangkan secara andal menggunakan framework Laravel 12 dan cloud database Supabase PostgreSQL. Implementasi ini sukses mendigitalisasi proses pencatatan administrasi kasir dari yang sebelumnya manual menjadi otomatis, sehingga berhasil mereduksi waktu pemrosesan transaksi harian dari rata-rata 15 menit menjadi 5 hingga 8 menit per transaksi, serta menekan tingkat kesalahan transaksi (error rate) dari 10% menjadi di bawah 2%.
+2. Fitur pelacakan cucian secara waktu nyata (real-time tracking) berhasil direalisasikan dengan memanfaatkan teknologi sinkronisasi data real-time berbasis koneksi WebSocket dari database Supabase PostgreSQL. Berdasarkan analisis performa, perubahan status cucian yang diinput oleh admin kasir dapat ditampilkan secara instan pada layar HP pelanggan dengan waktu respon (latency) rata-rata yang sangat rendah, berkisar antara 250 hingga 450 milidetik, tanpa memerlukan pemuatan ulang (refresh) halaman browser oleh pelanggan.
+3. Portal promosi digital berbasis web berhasil diintegrasikan secara utuh dengan modul katalog tarif layanan yang transparan, keranjang belanja, penentuan koordinat peta logistik penjemputan/pengantaran menggunakan Leaflet.js, serta fitur ulasan pelanggan. Integrasi ini mempermudah akuisisi pelanggan baru, memperluas penetrasi pasar, serta meningkatkan kepercayaan konsumen secara digital.
+
+4.2 Saran
+Guna pengembangan dan penyempurnaan sistem informasi YURE Laundry lebih lanjut di masa depan, disarankan beberapa poin pengembangan sebagai berikut:
+1. Integrasi Payment Gateway Otomatis: Mengintegrasikan gerbang pembayaran (payment gateway) resmi seperti Midtrans atau Xendit agar proses verifikasi transaksi non-tunai (QRIS/Transfer Bank) dapat berjalan secara otomatis dan tercatat instan di database tanpa memerlukan verifikasi manual oleh kasir.
+2. Pengembangan Aplikasi Mobile Native untuk Kurir: Membangun aplikasi versi mobile native (Android/iOS) khusus untuk kurir/driver guna mempermudah akses navigasi peta penjemputan/pengantaran pakaian secara real-time dengan dukungan GPS handphone yang berjalan di latar belakang (background service).
+3. Implementasi Fitur Push Notification: Mengintegrasikan API notifikasi otomatis (seperti WhatsApp Gateway API atau Web Push Notification) untuk mengirimkan pesan pemberitahuan langsung ke nomor WhatsApp atau browser pelanggan begitu status cucian selesai diproses, tanpa mengharuskan pelanggan memantau halaman pelacakan secara aktif.

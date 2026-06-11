@@ -16,12 +16,15 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        // Validasi input email dan password
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required'
         ]);
 
+        // Proses pencocokan kredensial login ke database
         if (Auth::attempt($credentials)) {
+            // Regenerasi session ID untuk mencegah session hijacking
             $request->session()->regenerate();
 
             // Jika OTP aktif (route otp.index ada) dan user belum verifikasi
@@ -33,6 +36,7 @@ class AuthController extends Controller
             return redirect()->intended('services');
         }
 
+        // Kembalikan error jika data login tidak cocok
         return back()->withErrors([
             'email' => 'Email atau password salah.',
         ])->onlyInput('email');
@@ -45,6 +49,7 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+        // Validasi data masukan dari form register
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -57,6 +62,7 @@ class AuthController extends Controller
             'phone.unique' => 'Nomor HP sudah terdaftar, silakan login.',
         ]);
 
+        // Simpan data user baru dengan password terenkripsi bcrypt
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -67,6 +73,7 @@ class AuthController extends Controller
             'role' => 'user'
         ]);
 
+        // Otomatis login setelah berhasil membuat akun
         Auth::login($user);
 
         // Jika OTP aktif (route otp.index ada) dan user belum verifikasi, arahkan ke OTP

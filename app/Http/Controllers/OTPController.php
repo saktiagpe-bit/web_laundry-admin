@@ -10,6 +10,7 @@ class OTPController extends Controller
 {
     public function index()
     {
+        // Kalau user sudah terverifikasi nomor HP-nya, langsung arahin ke halaman utama layanan
         if (Auth::user()->phone_verified_at) {
             return redirect()->route('services.index');
         }
@@ -23,9 +24,10 @@ class OTPController extends Controller
             return redirect()->route('services.index');
         }
 
-        // Generate 6 digit OTP
+        // Bikin kode OTP acak 6 digit
         $code = rand(100000, 999999);
         
+        // Simpan/update kode verifikasi dengan waktu kedaluwarsa 10 menit ke depan
         PhoneVerification::updateOrCreate(
             ['phone' => $user->phone],
             [
@@ -35,7 +37,7 @@ class OTPController extends Controller
             ]
         );
 
-        // Simulated SMS - we flash the OTP code to session so we can display it on the UI
+        // Simulasi SMS: kita simpan kodenya ke session flash biar bisa dirender di alert halaman web
         return back()->with('simulated_otp', "SIMULATION OTP SMS: Kode verifikasi Anda adalah {$code}");
     }
 
@@ -47,6 +49,7 @@ class OTPController extends Controller
 
         $user = Auth::user();
         
+        // Cari kode OTP aktif yang cocok, belum kedaluwarsa, dan belum pernah diverifikasi
         $verification = PhoneVerification::where('phone', $user->phone)
             ->where('code', $request->code)
             ->where('expires_at', '>', now())
@@ -57,10 +60,10 @@ class OTPController extends Controller
             return back()->with('error', 'Kode OTP tidak valid atau sudah kadaluarsa.');
         }
 
-        // Mark as verified
+        // Tandai kode verifikasi sudah sukses diverifikasi
         $verification->update(['verified_at' => now()]);
         
-        // Update user
+        // Update data user agar tidak ditanyai OTP lagi
         $user->update(['phone_verified_at' => now()]);
 
         return redirect()->route('services.index')->with('success', 'Nomor telepon berhasil diverifikasi!');

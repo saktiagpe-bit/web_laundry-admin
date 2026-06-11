@@ -12,6 +12,8 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
+        
+        // Filter data dashboard: kalau admin bisa liat semua, kalau user biasa cuma data dia sendiri
         if ($user->role === 'admin') {
             $active_orders = Order::whereNotIn('status', ['Selesai'])->count();
             $total_orders = Order::count();
@@ -48,6 +50,7 @@ class DashboardController extends Controller
 
     public function orderDetail(Order $order)
     {
+        // Validasi pengaman: mastiin user biasa gak bisa intip pesanan orang lain dengan ganti ID di URL
         if ($order->user_id !== Auth::id() && Auth::user()->role !== 'admin') {
             abort(403);
         }
@@ -89,6 +92,7 @@ class DashboardController extends Controller
 
     public function updateStatus(Request $request, Order $order)
     {
+        // Cuma admin yang boleh update status cucian & pembayaran
         if (Auth::user()->role !== 'admin') {
             abort(403);
         }
@@ -104,14 +108,14 @@ class DashboardController extends Controller
             'status' => $request->status
         ]);
 
-        // Add to OrderStatus History
+        // Catat riwayat perubahan status buat tracking timeline cucian
         \App\Models\OrderStatus::create([
             'order_id' => $order->id,
             'status' => $request->status,
             'description' => $request->description ?? 'Status diperbarui oleh Admin',
         ]);
 
-        // Update Payment Status
+        // Sinkronisasi status pembayaran (kalau lunas, catat waktu pelunasannya)
         if ($order->payment) {
             $payment_data = ['payment_status' => $request->payment_status];
             if ($request->payment_status === 'paid' && !$order->payment->paid_at) {
@@ -127,6 +131,7 @@ class DashboardController extends Controller
 
     public function uploadProof(Request $request, Order $order)
     {
+        // Pastiin cuma pemilik pesanan yang bisa upload bukti transfer
         if ($order->user_id !== Auth::id()) {
             abort(403);
         }
@@ -136,9 +141,11 @@ class DashboardController extends Controller
         ]);
 
         if ($request->hasFile('payment_proof')) {
+            // Simpan file bukti transfer ke storage public
             $path = $request->file('payment_proof')->store('payment_proofs', 'public');
             
             if ($order->payment) {
+                // Update link bukti bayar dan ubah status jadi pending_validation biar dicek admin
                 $order->payment->update([
                     'payment_proof' => $path,
                     'payment_status' => 'pending_validation'

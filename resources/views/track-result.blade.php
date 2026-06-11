@@ -70,14 +70,14 @@
 </div>
 
 @push('scripts')
-<!-- Supabase JS SDK via CDN -->
+<!-- Load Supabase JS SDK dari CDN untuk fitur Realtime Tracking -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const orderId = "{{ $order->id }}";
         const currentStatus = "{{ $order->status }}";
         
-        // Ambil credentials Supabase dari environment Laravel
+        // Ambil konfigurasi kredensial Supabase dari file .env Laravel
         const supabaseUrl = "{{ env('VITE_SUPABASE_URL') }}";
         const supabaseKey = "{{ env('VITE_SUPABASE_ANON_KEY') }}";
         
@@ -85,43 +85,47 @@
         
         if (supabaseUrl && supabaseKey) {
             try {
+                // Inisialisasi client Supabase
                 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
                 
-                // Berlangganan ke perubahan tabel order_statuses
+                // Dengarkan pembaruan status secara langsung (Realtime WebSocket)
                 const channel = supabaseClient
                     .channel('order-status-updates')
                     .on('postgres_changes', {
-                        event: 'INSERT',
+                        event: 'INSERT', // Dengarkan penambahan baris status baru
                         schema: 'public',
                         table: 'order_statuses',
-                        filter: `order_id=eq.${orderId}`
+                        filter: `order_id=eq.${orderId}` // Hanya untuk order ini saja
                     }, (payload) => {
-                        console.log('Perubahan status terdeteksi via Realtime WebSocket:', payload);
+                        console.log('Ada update status via Supabase Realtime:', payload);
+                        // Reload halaman agar UI terupdate otomatis tanpa perlu refresh manual
                         window.location.reload();
                     })
                     .subscribe((status) => {
                         if (status === 'SUBSCRIBED') {
                             usingRealtime = true;
-                            console.log('Koneksi terhubung ke Supabase Realtime WebSocket!');
+                            console.log('Berhasil terhubung ke Supabase Realtime WebSocket!');
                         }
                     });
             } catch (err) {
-                console.error('Gagal menginisialisasi Supabase Realtime:', err);
+                console.error('Koneksi Supabase Realtime bermasalah:', err);
             }
         }
         
-        // Fallback: Gunakan HTTP Polling (4 detik) jika Realtime WebSocket tidak aktif
+        // Mekanisme Fallback: Kalau WebSocket gagal terhubung,
+        // web otomatis ngecek status lewat HTTP Polling (Ajax request) setiap 4 detik ke server Laravel
         setInterval(function() {
             if (!usingRealtime) {
                 fetch(`/orders/${orderId}/status`)
                     .then(response => response.json())
                     .then(data => {
+                        // Jika status di server ternyata berbeda dengan status saat ini, reload halaman
                         if (data.status && data.status !== currentStatus) {
-                            console.log('Perubahan status terdeteksi via HTTP Polling');
+                            console.log('Update status terdeteksi via HTTP Polling');
                             window.location.reload();
                         }
                     })
-                    .catch(err => console.error('Error checking order status:', err));
+                    .catch(err => console.error('Error saat HTTP Polling:', err));
             }
         }, 4000);
     });

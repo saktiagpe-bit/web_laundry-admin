@@ -14,6 +14,7 @@ class AdminController extends Controller
 {
     public function reports(Request $request)
     {
+        // Tolak user biasa, hanya admin yang boleh liat laporan keuangan laundry
         if (!Auth::check() || Auth::user()->role !== 'admin') {
             return redirect()->route('home')->with('error', 'Anda tidak memiliki akses ke halaman admin.');
         }
@@ -21,15 +22,16 @@ class AdminController extends Controller
         $year = $request->input('year', date('Y'));
         $month = $request->input('month', date('m'));
 
+        // Cek driver database: bedain query SQLite (buat local dev/testing) sama PostgreSQL (untuk live/production)
         $isSqlite = DB::getDriverName() === 'sqlite';
 
-        // Base query for completed orders
+        // Base query untuk mengambil pesanan yang sudah selesai dikerjakan
         $query = Order::where('status', 'Selesai');
 
         $chartLabels = [];
         $chartData = [];
 
-        // DB driver-compatible queries
+        // Penyesuaian query berdasarkan timeframe laporan
         if ($timeframe === 'daily') {
             // Filter by year and month
             if ($isSqlite) {
@@ -216,11 +218,11 @@ class AdminController extends Controller
 
         $order->status = $newStatus;
 
-        // Side effect: if changing to 'Selesai'
+        // Efek samping: kalau cucian disetel 'Selesai', otomatis setel waktu selesai dan tandai pembayaran lunas
         if ($newStatus === 'Selesai') {
             $order->completed_at = Carbon::now();
             
-            // Mark payment as paid if it exists
+            // Otomatis ubah status pembayaran jadi lunas
             if ($order->payment) {
                 $order->payment->update([
                     'payment_status' => 'paid',
@@ -228,7 +230,7 @@ class AdminController extends Controller
                 ]);
             }
         } else {
-            // If status is changed back from 'Selesai', remove completed_at
+            // Kalau status diganti balik dari 'Selesai' ke proses lain, hapus tanggal selesainya
             if ($oldStatus === 'Selesai') {
                 $order->completed_at = null;
             }
@@ -236,7 +238,7 @@ class AdminController extends Controller
 
         $order->save();
 
-        // Create log in OrderStatus
+        // Catat riwayat perubahan status buat tracking timeline pelanggan
         OrderStatus::create([
             'order_id' => $order->id,
             'status' => $newStatus,
@@ -248,16 +250,19 @@ class AdminController extends Controller
 
     public function validatePayment(Request $request, Order $order)
     {
+        // Validasi akses admin
         if (!Auth::check() || Auth::user()->role !== 'admin') {
             return redirect()->route('home')->with('error', 'Anda tidak memiliki akses ke halaman admin.');
         }
 
+        // Validasi bukti transfer: ubah status bayar jadi lunas dan catat waktu bayarnya
         if ($order->payment) {
             $order->payment->update([
                 'payment_status' => 'paid',
                 'paid_at' => Carbon::now()
             ]);
 
+            // Catat log validasi ke riwayat status pesanan
             OrderStatus::create([
                 'order_id' => $order->id,
                 'status' => $order->status,

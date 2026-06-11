@@ -21,18 +21,23 @@ class CartController extends Controller
 
     public function add(Request $request)
     {
+        // Validasi data input: service_id harus ada di database, jumlah minimal 1
         $request->validate([
             'service_id' => 'required|exists:services,id',
             'quantity' => 'required|integer|min:1'
         ]);
 
         $service = Service::find($request->service_id);
+        
+        // Ambil data keranjang dari session (jika kosong, buat array baru)
         $cart = session()->get('cart', []);
 
+        // Jika layanan sudah ada di keranjang, jumlahkan kuantitas & hitung ulang subtotal
         if(isset($cart[$service->id])) {
             $cart[$service->id]['quantity'] += $request->quantity;
             $cart[$service->id]['subtotal'] = $cart[$service->id]['quantity'] * $service->price;
         } else {
+            // Jika belum ada, buat entri baru untuk disimpan
             $cart[$service->id] = [
                 'name' => $service->name,
                 'price' => $service->price,
@@ -41,6 +46,7 @@ class CartController extends Controller
             ];
         }
 
+        // Tulis kembali data keranjang terbaru ke dalam session
         session()->put('cart', $cart);
         return back()->with('success', 'Layanan ditambahkan ke keranjang!');
     }

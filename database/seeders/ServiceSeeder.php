@@ -18,7 +18,7 @@ class ServiceSeeder extends Seeder
             ['name' => 'Cuci Setrika', 'slug' => 'cuci-setrika', 'description' => 'Cuci bersih dan setrika rapi', 'price' => 8000, 'estimate_hours' => 48],
             ['name' => 'Setrika Saja', 'slug' => 'setrika-saja', 'description' => 'Hanya setrika (baju sudah dicuci)', 'price' => 4000, 'estimate_hours' => 24],
             ['name' => 'Laundry Sepatu', 'slug' => 'laundry-sepatu', 'description' => 'Cuci bersih semua jenis sepatu', 'price' => 25000, 'estimate_hours' => 72],
-            ['name' => 'Laundry Tas', 'slug' => 'laundry-tas', 'description' => 'Cuci tas ransel atau tas wanita', 'price' => 30000, 'estimate_hours' => 72],
+            ['name' => 'Laundry Boneka', 'slug' => 'laundry-boneka', 'description' => 'Cuci boneka bulu kecil atau sedang', 'price' => 20000, 'estimate_hours' => 48],
             ['name' => 'Laundry Karpet', 'slug' => 'laundry-karpet', 'description' => 'Cuci karpet ukuran sedang/besar', 'price' => 15000, 'estimate_hours' => 96],
             ['name' => 'Laundry Bed Cover', 'slug' => 'laundry-bed-cover', 'description' => 'Cuci bed cover ukuran besar', 'price' => 20000, 'estimate_hours' => 48],
         ];

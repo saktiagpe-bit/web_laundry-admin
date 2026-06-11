@@ -20,7 +20,7 @@ $imagesMap = [
     'cuci-setrika' => 'cuci_setrika',
     'setrika-saja' => 'setrika_saja',
     'laundry-sepatu' => 'laundry_sepatu',
-    'laundry-tas' => 'laundry_tas',
+    'laundry-boneka' => 'laundry_boneka',
     'laundry-karpet' => 'laundry_karpet',
     'laundry-bed-cover' => 'laundry_bed_cover',
 ];

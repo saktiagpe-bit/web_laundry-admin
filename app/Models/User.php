@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+// Model User ini bertindak sebagai jembatan penghubung ke tabel 'users' di database Supabase untuk autentikasi dan data akun.
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */

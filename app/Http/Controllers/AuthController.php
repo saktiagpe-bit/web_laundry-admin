@@ -23,6 +23,13 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+
+            // Jika OTP aktif (route otp.index ada) dan user belum verifikasi
+            // $user = Auth::user();
+            // if (\Route::has('otp.index') && !$user->phone_verified_at) {
+            //     return redirect()->route('otp.index')->with('warning', 'Silakan lakukan verifikasi OTP terlebih dahulu.');
+            // }
+
             return redirect()->intended('services');
         }
 
@@ -61,6 +68,11 @@ class AuthController extends Controller
         ]);
 
         Auth::login($user);
+
+        // Jika OTP aktif (route otp.index ada) dan user belum verifikasi, arahkan ke OTP
+        // if (\Route::has('otp.index') && !$user->phone_verified_at) {
+        //     return redirect()->route('otp.index')->with('success', 'Registrasi berhasil! Silakan verifikasi nomor HP Anda.');
+        // }
 
         return redirect()->route('services.index')->with('success', 'Registrasi berhasil!');
     }

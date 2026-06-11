@@ -29,18 +29,19 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
-// ==========================================
-// UNCOMMENT BARIS DI BAWAH INI DAN COMMENT OUT "Route::middleware('auth')->group..." UNTUK MENGAKTIFKAN OTP PROTEKSI:
-// Route::middleware(['auth', 'verified.phone'])->group(function () {
-// ==========================================
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // ==========================================
-    // UNCOMMENT BARIS DI BAWAH INI UNTUK MENGAKTIFKAN ROUTE OTP:
+    // [LANGKAH 1]: UNCOMMENT 3 BARIS DI BAWAH INI UNTUK AKTIFKAN ROUTE OTP
     // Route::get('/otp', [OTPController::class, 'index'])->name('otp.index');
     // Route::post('/otp/send', [OTPController::class, 'send'])->name('otp.send');
     // Route::post('/otp/verify', [OTPController::class, 'verify'])->name('otp.verify');
+    // ==========================================
+
+    // ==========================================
+    // [LANGKAH 2]: UNCOMMENT BARIS DI BAWAH INI UNTUK MEMPROTEKSI HALAMAN LAUNDRY DENGAN OTP:
+    // Route::middleware('verified.phone')->group(function () {
     // ==========================================
 
     // Protected Routes (Must be logged in)
@@ -69,8 +70,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/orders', [\App\Http\Controllers\AdminController::class, 'orders'])->name('admin.orders');
     Route::post('/admin/orders/{order}/status', [\App\Http\Controllers\AdminController::class, 'updateStatus'])->name('admin.orders.update-status');
     Route::post('/admin/orders/{order}/validate-payment', [\App\Http\Controllers\AdminController::class, 'validatePayment'])->name('admin.orders.validate-payment');
+
+    // ==========================================
+    // [LANGKAH 3]: UNCOMMENT PENUTUP DI BAWAH INI JIKA MENGAKTIFKAN MIDDLEWARE PROTEKSI OTP DI ATAS:
+    // });
+    // ==========================================
 });
-// ==========================================
-// UNCOMMENT PENUTUP GRUP DI BAWAH INI JIKA MENGAKTIFKAN GRUP MIDDLEWARE OTP DI ATAS:
-// });
-// ==========================================

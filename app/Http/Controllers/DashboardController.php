@@ -15,16 +15,22 @@ class DashboardController extends Controller
         
         // Filter data dashboard: kalau admin bisa liat semua, kalau user biasa cuma data dia sendiri
         if ($user->role === 'admin') {
+            // Tarik data jumlah pesanan aktif dari database Supabase
             $active_orders = Order::whereNotIn('status', ['Selesai'])->count();
+            // Tarik total pesanan masuk dari database Supabase
             $total_orders = Order::count();
+            // Ambil 5 transaksi teranyar dari database Supabase
             $recent_orders = Order::orderBy('created_at', 'desc')
                 ->limit(5)
                 ->get();
         } else {
+            // Tarik data jumlah pesanan aktif milik user dari database Supabase
             $active_orders = Order::where('user_id', $user->id)
                 ->whereNotIn('status', ['Selesai'])
                 ->count();
+            // Tarik total pesanan milik user dari database Supabase
             $total_orders = Order::where('user_id', $user->id)->count();
+            // Ambil 5 transaksi terbaru milik user dari database Supabase
             $recent_orders = Order::where('user_id', $user->id)
                 ->orderBy('created_at', 'desc')
                 ->limit(5)
@@ -38,8 +44,10 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         if ($user->role === 'admin') {
+            // Ambil semua daftar pesanan dari database Supabase
             $orders = Order::orderBy('created_at', 'desc')->get();
         } else {
+            // Ambil daftar pesanan khusus milik user dari database Supabase
             $orders = Order::where('user_id', $user->id)
                 ->orderBy('created_at', 'desc')
                 ->get();
@@ -55,6 +63,7 @@ class DashboardController extends Controller
             abort(403);
         }
 
+        // Ambil relasi (items, payments, status, jadwal) dari database Supabase (Eager Loading)
         $order->load(['items', 'payment', 'statuses', 'deliverySchedule']);
 
         return view('dashboard.order-detail', compact('order'));

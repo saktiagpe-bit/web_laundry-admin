@@ -159,7 +159,7 @@ class AdminController extends Controller
             }
         }
 
-        // Get detailed transactions list for full transparency
+        // Ambil rincian data transaksi untuk tabel laporan dari database Supabase
         $detailQuery = Order::where('status', 'Selesai')->orderBy('completed_at', 'desc');
 
         if ($timeframe === 'daily') {
@@ -178,6 +178,7 @@ class AdminController extends Controller
             }
         }
 
+        // Jalankan penarikan data transaksi laporan dari database Supabase
         $transactions = $detailQuery->get();
         $totalRevenue = $transactions->sum('total_price');
 
@@ -195,11 +196,13 @@ class AdminController extends Controller
         }
         $status = $request->input('status', 'semua');
         
+        // Buat query untuk menarik pesanan
         $query = Order::orderBy('created_at', 'desc');
         if ($status !== 'semua') {
             $query->where('status', $status);
         }
         
+        // Eksekusi query untuk mengambil daftar pesanan dari database Supabase
         $orders = $query->get();
         return view('admin.orders', compact('orders', 'status'));
     }

@@ -127,7 +127,7 @@ class CheckoutController extends Controller
 
     public function success(Order $order)
     {
-        // Ensure user owns this order
+        // Pastikan pesanan (yang otomatis ditarik dari database Supabase) adalah milik user aktif
         if($order->user_id !== Auth::id()) {
             abort(403);
         }

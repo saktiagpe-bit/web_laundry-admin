@@ -22,7 +22,7 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        // Proses pencocokan kredensial login ke database
+        // Ambil data user dari database Supabase untuk mencocokkan kredensial login
         if (Auth::attempt($credentials)) {
             // Regenerasi session ID untuk mencegah session hijacking
             $request->session()->regenerate();
@@ -49,7 +49,7 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        // Validasi data masukan dari form register
+        // Validasi data masukan dari form register (pengecekan unik email/HP dilakukan di database Supabase)
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -62,7 +62,7 @@ class AuthController extends Controller
             'phone.unique' => 'Nomor HP sudah terdaftar, silakan login.',
         ]);
 
-        // Simpan data user baru dengan password terenkripsi bcrypt
+        // Simpan data registrasi user baru ke database Supabase dengan password terenkripsi bcrypt
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
